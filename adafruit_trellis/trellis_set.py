@@ -167,7 +167,7 @@ class MATRIX(object):
         """
         Refresh the matrix and show the changes.
 
-        :param ~trellis.TRELLIS *matrices: List of `trellis.TRELLIS` objects
+        :param ~trellis.TRELLIS matrices: List of `trellis.TRELLIS` objects
                                            you wish refresh.
                                            Only required if you want to turn
                                            on an LED on a specific Trellis
@@ -191,7 +191,7 @@ class MATRIX(object):
                       have (4 Trellis boards: 0-63). When using `*matrices`,
                       the range of `x` is 0-15 for the LED on each Trellis.
 
-        :param ~trellis.TRELLIS *matrices: List of `trellis.TRELLIS` objects
+        :param ~trellis.TRELLIS matrices: List of `trellis.TRELLIS` objects
                                            you wish to turn on the LED `x`.
                                            Only required if you want to turn
                                            on an LED on a specific Trellis
@@ -219,7 +219,7 @@ class MATRIX(object):
                       have (4 Trellis boards: 0-63). When using `*matrices`,
                       the range of `x` is 0-15 for the LED on each Trellis.
 
-        :param ~trellis.TRELLIS *matrices: List of `trellis.TRELLIS` objects
+        :param ~trellis.TRELLIS matrices: List of `trellis.TRELLIS` objects
                                            you wish to turn off the LED `x`.
                                            Only required if you want to turn
                                            off an LED on a specific Trellis
@@ -246,7 +246,7 @@ class MATRIX(object):
                       have (4 Trellis boards: 0-63). When using `*matrices`,
                       the range of `x` is 0-15 for the LED on each Trellis.
 
-        :param ~trellis.TRELLIS *matrices: List of `trellis.TRELLIS` objects
+        :param ~trellis.TRELLIS matrices: List of `trellis.TRELLIS` objects
                                            you wish to check the LED `x`.
                                            Only required if you want to check
                                            an LED on a specific Trellis board.
@@ -268,7 +268,7 @@ class MATRIX(object):
 
         :param int color: 0 == OFF, > 0 == ON
 
-        :param ~trellis.TRELLIS *matrices: List of `trellis.TRELLIS` objects
+        :param ~trellis.TRELLIS matrices: List of `trellis.TRELLIS` objects
                                            you wish to fill with the given color.
                                            Only required if you want to fill
                                            the color on a specific Trellis board.
@@ -284,7 +284,7 @@ class MATRIX(object):
         """
         Read the button matrix register on the Trellis.
 
-        :param ~trellis.TRELLIS *matrices: List of `trellis.TRELLIS` object(s)
+        :param ~trellis.TRELLIS matrices: List of `trellis.TRELLIS` object(s)
                                            you wish to read the button matrix of.
                                            Only required if you want to read the
                                            the buttons on a specific Trellis board.
@@ -311,7 +311,7 @@ class MATRIX(object):
                            When using `*matrices`, the range of `button` is 0-15
                            for the button on each Trellis.
 
-        :param ~trellis.TRELLIS *matrices: List of `trellis.TRELLIS` object you
+        :param ~trellis.TRELLIS matrices: List of `trellis.TRELLIS` object you
                                            wish to check the button on.
                                            Only required if you want to read the
                                            the buttons on a specific Trellis board.
@@ -342,7 +342,7 @@ class MATRIX(object):
                            When using `*matrices`, the range of `button` is 0-15
                            for the button on each Trellis.
 
-        :param ~trellis.TRELLIS *matrices: List of `trellis.TRELLIS` object you
+        :param ~trellis.TRELLIS matrices: List of `trellis.TRELLIS` object you
                                            wish to check the button on.
                                            Only required if you want to read the
                                            the buttons on a specific Trellis board.
