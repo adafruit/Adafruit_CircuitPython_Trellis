@@ -76,7 +76,7 @@ class TRELLIS:
 
     :param ~busio.I2C i2c: The `busio.I2C` object to use. This is the only required parameter
                            when using a single Trellis board.
-    :param int address: The I2C address of the Trellis board you're using. Defaults to `0x70`
+    :param int address: The I2C address of the Trellis board you're using. Defaults to ``0x70``
                         which is the default address for Trellis boards. See Trellis product
                         guide for using different/multiple I2C addresses.
                         https://learn.adafruit.com/adafruit-trellis-diy-open-source-led-keypad
@@ -169,7 +169,7 @@ class TRELLIS:
 
     def led_on(self, x):
         """
-        Turns an LED on. Must call `[trellis].show()` afterwards to update the matrix.
+        Turns an LED on. Must call ``trellis.show()`` afterwards to update the matrix.
 
         :param int x: LED number (1-16) to turn on.
         """
@@ -182,7 +182,7 @@ class TRELLIS:
 
     def led_off(self, x):
         """
-        Turns an LED off. Must call `[trellis].show()` to update the matrix.
+        Turns an LED off. Must call ``trellis.show()`` to update the matrix.
 
         :param int x: LED number (0-15) to turn off.
         """
