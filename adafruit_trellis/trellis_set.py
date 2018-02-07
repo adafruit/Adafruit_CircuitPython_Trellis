@@ -52,13 +52,13 @@ __version__ = "1.0.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Trellis.git"
 
 
-class MATRIX(object):
+class Matrix(object):
     """
     Driver base for a matrix of Trellis Boards (up to 8)
     See Trellis product guide for using different/multiple I2C addresses.
     https://learn.adafruit.com/adafruit-trellis-diy-open-source-led-keypad
 
-    :param ~trellis.TRELLIS object: A list of ``trellis.TRELLIS`` objects to
+    :param ~trellis.Trellis object: A list of ``trellis.Trellis`` objects to
                                     use in the matrix. Each object needs its
                                     own I2C address.
 
@@ -73,9 +73,9 @@ class MATRIX(object):
         from adafruit_trellis import trellis_set
 
         i2c = busio.I2C(SCL, SDA)
-        matrix1 = trellis.TRELLIS(i2c) #omitting the address defaults to 0x70
-        matrix2 = trellis.TRELLIS(i2c, 0x72)
-        trelly = trellis_set.MATRIX(matrix1, matrix2)
+        matrix1 = trellis.Trellis(i2c) #omitting the address defaults to 0x70
+        matrix2 = trellis.Trellis(i2c, 0x72)
+        trelly = trellis_set.Matrix(matrix1, matrix2)
 
         while True:
             try:
@@ -104,8 +104,8 @@ class MATRIX(object):
                              'have attempted to use:', len(matrices))
 
         for matrix in matrices:
-            if matrix.__qualname__ != 'TRELLIS':
-                raise ValueError('Only Trellis objects can be used with a MATRIX.',
+            if matrix.__qualname__ != 'Trellis':
+                raise ValueError('Only Trellis objects can be used with a Matrix.',
                                  matrix, 'is not a Trellis object.')
             if matrix not in self._matrices:
                 self._matrices.append(matrix)
@@ -131,10 +131,10 @@ class MATRIX(object):
         Set the blink rate.
 
         :param int brightness: Range 0-3.
-        :param ~trellis.TRELLIS object(s): list of ``trellis.TRELLIS`` objects
+        :param ~trellis.Trellis object(s): list of ``trellis.Trellis`` objects
                                            you wish to change the blink rate
                                            of. Only required if you don't want
-                                           to update ALL ``trellis_set.MATRIX``
+                                           to update ALL ``trellis_set.Matrix``
                                            objects.
 
         """
@@ -150,10 +150,10 @@ class MATRIX(object):
         Set the brightness.
 
         :param int brightness: Range 0-15.
-        :param ~trellis.TRELLIS object(s): list of ``trellis.TRELLIS`` objects
+        :param ~trellis.Trellis object(s): list of ``trellis.Trellis`` objects
                                            you wish to change the brightness
                                            of. Only required if you don't want
-                                           to update ALL `trellis_set.MATRIX`
+                                           to update ALL `trellis_set.Matrix`
                                            objects.
         """
         if not matrices:
@@ -167,7 +167,7 @@ class MATRIX(object):
         """
         Refresh the matrix and show the changes.
 
-        :param ~trellis.TRELLIS matrices: List of ``trellis.TRELLIS`` objects
+        :param ~trellis.Trellis matrices: List of ``trellis.Trellis`` objects
                                            you wish refresh.
                                            Only required if you want to turn
                                            on an LED on a specific Trellis
@@ -186,12 +186,12 @@ class MATRIX(object):
         ``trellis.show()`` afterwards to update the matrix.
 
         :param int x: Number of LED you wish to turn on. When not including
-                      specific ``trellis.TRELLIS`` objects (``*matrices`` param),
+                      specific ``trellis.Trellis`` objects (``*matrices`` param),
                       the range of ``x`` is 0 to the maximum number of LEDs you
                       have (4 Trellis boards: 0-63). When using ``*matrices``,
                       the range of ``x`` is 0-15 for the LED on each Trellis.
 
-        :param ~trellis.TRELLIS matrices: List of ``trellis.TRELLIS`` objects
+        :param ~trellis.Trellis matrices: List of ``trellis.Trellis`` objects
                                            you wish to turn on the LED ``x``.
                                            Only required if you want to turn
                                            on an LED on a specific Trellis
@@ -214,12 +214,12 @@ class MATRIX(object):
         ``trellis.show()`` afterwards to update the matrix.
 
         :param int x: Number of LED you wish to turn off. When not including
-                      specific ``trellis.TRELLIS`` objects (``*matrices`` param),
+                      specific ``trellis.Trellis`` objects (``*matrices`` param),
                       the range of ``x`` is 0 to the maximum number of LEDs you
                       have (4 Trellis boards: 0-63). When using ``*matrices``,
                       the range of ``x`` is 0-15 for the LED on each Trellis.
 
-        :param ~trellis.TRELLIS matrices: List of ``trellis.TRELLIS`` objects
+        :param ~trellis.Trellis matrices: List of ``trellis.Trellis`` objects
                                            you wish to turn off the LED ``x``.
                                            Only required if you want to turn
                                            off an LED on a specific Trellis
@@ -241,12 +241,12 @@ class MATRIX(object):
         Gives the current status of an LED: True == ON, False == OFF
 
         :param int x: Number of LED you wish to check. When not including
-                      specific ``trellis.TRELLIS`` objects (``*matrices`` param),
+                      specific ``trellis.Trellis`` objects (``*matrices`` param),
                       the range of ``x`` is 0 to the maximum number of LEDs you
                       have (4 Trellis boards: 0-63). When using ``*matrices``,
                       the range of ``x`` is 0-15 for the LED on each Trellis.
 
-        :param ~trellis.TRELLIS matrices: List of ``trellis.TRELLIS`` objects
+        :param ~trellis.Trellis matrices: List of ``trellis.Trellis`` objects
                                            you wish to check the LED ``x``.
                                            Only required if you want to check
                                            an LED on a specific Trellis board.
@@ -268,7 +268,7 @@ class MATRIX(object):
 
         :param int color: 0 == OFF, > 0 == ON
 
-        :param ~trellis.TRELLIS matrices: List of ``trellis.TRELLIS`` objects
+        :param ~trellis.Trellis matrices: List of ``trellis.Trellis`` objects
                                            you wish to fill with the given color.
                                            Only required if you want to fill
                                            the color on a specific Trellis board.
@@ -284,7 +284,7 @@ class MATRIX(object):
         """
         Read the button matrix register on the Trellis.
 
-        :param ~trellis.TRELLIS matrices: List of ``trellis.TRELLIS`` object(s)
+        :param ~trellis.Trellis matrices: List of ``trellis.Trellis`` object(s)
                                            you wish to read the button matrix of.
                                            Only required if you want to read the
                                            the buttons on a specific Trellis board.
@@ -305,13 +305,13 @@ class MATRIX(object):
         the button was/is depressed. Returns zero otherwise.
 
         :param int button: Number of the button you wish to check.
-                           When not including specific ``trellis.TRELLIS`` objects
+                           When not including specific ``trellis.Trellis`` objects
                            (``*matrices`` param), the range of ``button`` is 0 to the
                            maximum number of buttons available (4 boards: 0-63).
                            When using ``*matrices``, the range of ``button`` is 0-15
                            for the button on each Trellis.
 
-        :param ~trellis.TRELLIS matrices: List of ``trellis.TRELLIS`` object you
+        :param ~trellis.Trellis matrices: List of ``trellis.Trellis`` object you
                                            wish to check the button on.
                                            Only required if you want to read the
                                            the buttons on a specific Trellis board.
@@ -336,13 +336,13 @@ class MATRIX(object):
         the button was/is released. Returns zero otherwise.
 
         :param int button: Number of the button you wish to check.
-                           When not including specific ``trellis.TRELLIS`` objects
+                           When not including specific ``trellis.Trellis`` objects
                            (``*matrices`` param), the range of ``button`` is 0 to the
                            maximum number of buttons available (4 boards: 0-63).
                            When using ``*matrices``, the range of ``button`` is 0-15
                            for the button on each Trellis.
 
-        :param ~trellis.TRELLIS matrices: List of ``trellis.TRELLIS`` object you
+        :param ~trellis.Trellis matrices: List of ``trellis.Trellis`` object you
                                            wish to check the button on.
                                            Only required if you want to read the
                                            the buttons on a specific Trellis board.

@@ -41,6 +41,7 @@ Implementation Notes
 * Adafruit CircuitPython firmware (2.2.0+) for the ESP8622 and M0-based boards:
   https://github.com/adafruit/circuitpython/releases
 * Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
+
 """
 
 __version__ = "1.0.0"
@@ -70,7 +71,7 @@ buttonLUT = (0x07, 0x04, 0x02, 0x22,
              0x13, 0x12, 0x11, 0x31)
 # pylint: enable=bad-whitespace, invalid-name
 
-class TRELLIS:
+class Trellis:
     """
     Driver base for a single Trellis Board
 
@@ -91,7 +92,7 @@ class TRELLIS:
         from adafruit_trellis import trellis
 
         i2c = busio.I2C(board.SCL, board.SDA)
-        trellis = trellis.TRELLIS(i2c)
+        trellis = trellis.Trellis(i2c)
         print('Starting button sensory loop...')
         while True:
             try:
@@ -218,7 +219,11 @@ class TRELLIS:
             self._led_buffer[i+1] = fill
 
     def read_buttons(self):
-        """Read the button matrix register on the Trellis"""
+        """
+        Read the button matrix register on the Trellis.
+        Returns ``True`` if new button presses are recorded.
+        Otherwise ``False`` is returned.
+        """
         self._last_buttons[:] = self._buttons_buffer[:]
         self._write_cmd(_HT16K33_KEY_READ_CMD)
         with self.i2c_device:
