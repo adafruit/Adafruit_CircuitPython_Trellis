@@ -12,12 +12,12 @@ from adafruit_trellis import trellis_set
 i2c = busio.I2C(SCL, SDA)
 
 # Create a Trellis object for each board
-matrix1 = trellis.TRELLIS(i2c, 0x72)
-matrix2 = trellis.TRELLIS(i2c) # 0x70 when no I2C address is supplied
+matrix1 = trellis.Trellis(i2c, 0x72)
+matrix2 = trellis.Trellis(i2c) # 0x70 when no I2C address is supplied
 
 # Create the Trellis matrix using the board
 # objects
-trellis = trellis_set.MATRIX(matrix1, matrix2)
+trellis = trellis_set.Matrix(matrix1, matrix2)
 
 # Turn on every LED
 print('Turning all LEDs on...')
