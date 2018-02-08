@@ -51,6 +51,7 @@ Implementation Notes
 __version__ = "1.0.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Trellis.git"
 
+from . import trellis
 
 class Matrix(object):
     """
@@ -69,7 +70,6 @@ class Matrix(object):
         import time
         import busio
         from board import SCL, SDA
-        from adafruit_trellis import trellis
         from adafruit_trellis import trellis_set
 
         i2c = busio.I2C(SCL, SDA)
@@ -104,7 +104,7 @@ class Matrix(object):
                              'have attempted to use:', len(matrices))
 
         for matrix in matrices:
-            if matrix.__qualname__ != 'Trellis':
+            if not isinstance(matrix, trellis.Trellis):
                 raise ValueError('Only Trellis objects can be used with a Matrix.',
                                  matrix, 'is not a Trellis object.')
             if matrix not in self._matrices:

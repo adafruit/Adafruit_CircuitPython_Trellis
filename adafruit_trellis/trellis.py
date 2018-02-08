@@ -130,36 +130,51 @@ class Trellis:
         with self.i2c_device:
             self.i2c_device.write(self._temp)
 
-    def blink_rate(self, rate=None):
+    @property
+    def blink_rate(self):
         """
-        Get or set the blink rate.
-
-        :param int rate: (Optional) Range 0-3. If no parameter is given, current
-                          blink rate is returned.
+        Get the blink rate.
 
         """
-        if rate is None:
-            return self._blink_rate
+        return self._blink_rate
+        
+    @blink_rate.setter
+    def blink_rate(self, rate):
+        """
+        Set the blink rate.
+
+        :param int rate: Range 0-3. If no parameter is given, current blink rate
+                         is returned.
+
+        """
+        if 0 < rate > 3:
+            raise ValueError('Blink rate must be an integer in the range: 0-3')
         rate = rate & 0x03
         self._blink_rate = rate
         self._write_cmd(_HT16K33_BLINK_CMD |
                         _HT16K33_BLINK_DISPLAYON | rate << 1)
-        return None
 
+    @property
+    def brightness(self):
+        """
+        Get the brightness.
+        """
+        return self._brightness
+
+    @brightness.setter
     def brightness(self, brightness):
         """
-        Get or set the brightness.
+        Set the brightness.
 
-        :param int brightness: (Optional) Range 0-15. If no parameter is given, current
+        :param int brightness: Range 0-15. If no parameter is given, current
                                brightness is returned.
 
         """
-        if brightness is None:
-            return self._brightness
+        if 0 < brightness > 15:
+            raise ValueError('Brightness must be an integer in the range: 0-15')
         brightness = brightness & 0x0F
         self._brightness = brightness
         self._write_cmd(_HT16K33_CMD_BRIGHTNESS | brightness)
-        return None
 
     def show(self):
         """Refresh the LED buffer and show the changes."""
