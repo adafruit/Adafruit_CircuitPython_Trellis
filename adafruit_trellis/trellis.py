@@ -122,8 +122,8 @@ class Trellis:
 
         self.fill(0)
         self._write_cmd(_HT16K33_OSCILATOR_ON)
-        self.blink_rate(0)
-        self.brightness(15)
+        self.blink_rate = 0
+        self.brightness = 15
 
     def _write_cmd(self, byte):
         self._temp[0] = byte
@@ -137,7 +137,7 @@ class Trellis:
 
         """
         return self._blink_rate
-        
+
     @blink_rate.setter
     def blink_rate(self, rate):
         """
