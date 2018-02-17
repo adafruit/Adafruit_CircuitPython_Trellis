@@ -32,30 +32,30 @@ This is easily achieved by downloading
 
 Usage Example
 =============
+See `examples/trellis_simpletest.py <https://github.com/adafruit/Adafruit_CircuitPython_Trellis/examples/trellis_simpletest.py>`_ for full
+usage example.
 
 .. code:: python
 
     import time
     import busio
     from board import SCL, SDA
-    from adafruit_trellis import trellis
+    from adafruit_trellis import Trellis
 
     # Create the I2C interface
     i2c = busio.I2C(SCL, SDA)
 
     # Create a Trellis object for each board
-    trellis = trellis.TRELLIS(i2c) # 0x70 when no I2C address is supplied
+    trellis = Trellis(i2c) # 0x70 when no I2C address is supplied
 
     # Turn on every LED
     print('Turning all LEDs on...')
     trellis.fill(1)
-    trellis.show()
     time.sleep(2)
 
     # Turn off every LED
     print('Turning all LEDs off...')
     trellis.fill(0)
-    trellis.show()
     time.sleep(2)
 
 Contributing
