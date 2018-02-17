@@ -115,9 +115,9 @@ class Trellis():
                 break
             time.sleep(.1)
     """
-    # pylint: disable=dangerous-default-value
-    def __init__(self, i2c, addresses=[0x70]):
-    # pylint: enable=dangerous-default-value
+    def __init__(self, i2c, addresses=None):
+        if addresses is None:
+            addresses = [0x70]
         self._i2c_devices = []
         self._led_buffer = []
         self._buttons = []
