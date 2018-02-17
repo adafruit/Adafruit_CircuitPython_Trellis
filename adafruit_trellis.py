@@ -147,7 +147,7 @@ class Trellis():
             with device:
                 device.write(self._temp)
 
-     @property
+    @property
     def blink_rate(self):
         """
         The current blink rate as an integer range 0-3.
