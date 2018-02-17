@@ -24,7 +24,7 @@
 #  affiliation to Adafruit is implied.
 """
 `adafruit_trellis` - Adafruit Trellis Monochrome 4x4 LED Backlit Keypad
-====================================================
+=========================================================================
 
 CircuitPython library to support Adafruit's Trellis Keypad.
 
