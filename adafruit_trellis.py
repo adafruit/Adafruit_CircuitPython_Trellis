@@ -1,16 +1,16 @@
 #  This is a library for the Adafruit Trellis w/HT16K33
 #
-#  Designed specifically to work with the Adafruit Trellis 
+#  Designed specifically to work with the Adafruit Trellis
 #  ----> https://www.adafruit.com/products/1616
 #  ----> https://www.adafruit.com/products/1611
 #
-#  These displays use I2C to communicate, 2 pins are required to  
+#  These displays use I2C to communicate, 2 pins are required to
 #  interface
-#  Adafruit invests time and resources providing this open source code, 
-#  please support Adafruit and open-source hardware by purchasing 
+#  Adafruit invests time and resources providing this open source code,
+#  please support Adafruit and open-source hardware by purchasing
 #  products from Adafruit!
 #
-#  Written by Limor Fried/Ladyada for Adafruit Industries.  
+#  Written by Limor Fried/Ladyada for Adafruit Industries.
 #  MIT license, all text above must be included in any redistribution
 #
 #  Also utilized functions from the CircuitPython HT16K33 library
@@ -198,7 +198,7 @@ class Trellis():
 
     @auto_show.setter
     def auto_show(self, value):
-        if not value == True or not value == False:
+        if value not in (True, False):
             raise ValueError("Auto show value must be True or False")
         self._auto_show = value
 
@@ -210,9 +210,9 @@ class Trellis():
 
         """
         fill = 0xff if color else 0x00
-        for d in range(len(self._i2c_devices)):
+        for buff in range(len(self._i2c_devices)):
             for i in range(16):
-                self._led_buffer[d][i] = fill
+                self._led_buffer[buff][i] = fill
         if self._auto_show:
             self.show()
 
@@ -273,26 +273,26 @@ class Trellis():
             self._parent_show = show
 
         def __getitem__(self, x):
-            if 0 < x > self._parent._num_leds:
-                raise ValueError("LED number must be between 0 -", self._parent._num_leds)
+            if 0 < x > self_parent._num_leds:
+                raise ValueError("LED number must be between 0 -", self._parent_num_leds)
             led = ledLUT[x % 16] >> 4
             mask = 1 << (ledLUT[x % 16] & 0x0f)
-            return bool(((self._parent._led_buffer[x // 16][led * 2] | \
-                         self._parent._led_buffer[x // 16][(led * 2) + 1] << 8) & mask) > 0)
-        
+            return bool(((self._parent_led_buffer[x // 16][led * 2] | \
+                         self._parent_led_buffer[x // 16][(led * 2) + 1] << 8) & mask) > 0)
+
         def __setitem__(self, x, value):
-            if 0 < x > self._parent._num_leds:
-                raise ValueError("LED number must be between 0 -", self._parent._num_leds)
+            if 0 < x > self._parent_num_leds:
+                raise ValueError("LED number must be between 0 -", self._parent_num_leds)
             led = ledLUT[x % 16] >> 4
             mask = 1 << (ledLUT[x % 16] & 0x0f)
             if value == True:
-                self._parent._led_buffer[x // 16][led * 2] |= mask
-                self._parent._led_buffer[x // 16][(led * 2) + 1] |= mask >> 8
+                self._parent_led_buffer[x // 16][led * 2] |= mask
+                self._parent_led_buffer[x // 16][(led * 2) + 1] |= mask >> 8
             elif value == False:
-                self._parent._led_buffer[x // 16][led * 2] &= ~mask
-                self._parent._led_buffer[x // 16][(led * 2) + 1] &= ~mask >> 8
+                self._parent_led_buffer[x // 16][led * 2] &= ~mask
+                self._parent_led_buffer[x // 16][(led * 2) + 1] &= ~mask >> 8
             else:
                 raise ValueError("LED value must be True or False")
 
             if self._parent._auto_show:
-                self._parent.show()
+                self._parent_show()
