@@ -87,7 +87,7 @@ class Trellis():
     Example:
 
     .. code-block:: python
-    
+
         import time
         import busio
         from board import SCL, SDA
@@ -115,7 +115,9 @@ class Trellis():
                 break
             time.sleep(.1)
     """
+    #pylint: disable=dangerous-default-value
     def __init__(self, i2c, addresses=[0x70]):
+    #pylint: enable=dangerous-default-value
         self._i2c_devices = []
         self._led_buffer = []
         self._buttons = []
@@ -265,6 +267,7 @@ class Trellis():
         return ~self._is_pressed(button) & self._was_pressed(button)
         # pylint: enable=invalid-unary-operand-type
 
+    # pylint: disable=protected-access, too-few-public-methods
     class _led_obj():
         def __init__(self, num_leds, led_buffer, show, auto_show):
             self._parent_num_leds = num_leds
@@ -273,7 +276,7 @@ class Trellis():
             self._parent_show = show
 
         def __getitem__(self, x):
-            if 0 < x > self_parent._num_leds:
+            if 0 < x > self_parent_num_leds:
                 raise ValueError("LED number must be between 0 -", self._parent_num_leds)
             led = ledLUT[x % 16] >> 4
             mask = 1 << (ledLUT[x % 16] & 0x0f)
@@ -285,14 +288,14 @@ class Trellis():
                 raise ValueError("LED number must be between 0 -", self._parent_num_leds)
             led = ledLUT[x % 16] >> 4
             mask = 1 << (ledLUT[x % 16] & 0x0f)
-            if value == True:
+            if value:
                 self._parent_led_buffer[x // 16][led * 2] |= mask
                 self._parent_led_buffer[x // 16][(led * 2) + 1] |= mask >> 8
-            elif value == False:
+            elif not value:
                 self._parent_led_buffer[x // 16][led * 2] &= ~mask
                 self._parent_led_buffer[x // 16][(led * 2) + 1] &= ~mask >> 8
             else:
                 raise ValueError("LED value must be True or False")
 
-            if self._parent._auto_show:
+            if self._parent_auto_show:
                 self._parent_show()
