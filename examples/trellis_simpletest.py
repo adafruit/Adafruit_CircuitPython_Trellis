@@ -51,6 +51,7 @@ for i in range(15,0,-1):
 # Any button that is still depressed (pressed_buttons),
 # the LED will remain on.
 print('Starting button sensory loop...')
+pressed_buttons = set()
 while True:
     # Make sure to take a break during each trellis.read_buttons
     # cycle.
