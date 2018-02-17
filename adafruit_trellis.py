@@ -80,7 +80,7 @@ class Trellis():
     :param ~busio.I2C i2c: The `busio.I2C` object to use. This is the only required parameter
                            when using a single Trellis board.
     :param list addresses: The I2C address(es) of the Trellis board(s) you're using. Defaults
-                           to `[0x70]` which is the default address for Trellis boards. See
+                           to ``[0x70]`` which is the default address for Trellis boards. See
                            Trellis product guide for using different/multiple I2C addresses.
                            https://learn.adafruit.com/adafruit-trellis-diy-open-source-led-keypad
 
@@ -115,9 +115,9 @@ class Trellis():
                 break
             time.sleep(.1)
     """
-    #pylint: disable=dangerous-default-value
+    # pylint: disable=dangerous-default-value
     def __init__(self, i2c, addresses=[0x70]):
-    #pylint: enable=dangerous-default-value
+    # pylint: enable=dangerous-default-value
         self._i2c_devices = []
         self._led_buffer = []
         self._buttons = []
@@ -276,7 +276,7 @@ class Trellis():
             self._parent_show = show
 
         def __getitem__(self, x):
-            if 0 < x > self_parent_num_leds:
+            if 0 < x > self._parent_num_leds:
                 raise ValueError("LED number must be between 0 -", self._parent_num_leds)
             led = ledLUT[x % 16] >> 4
             mask = 1 << (ledLUT[x % 16] & 0x0f)
