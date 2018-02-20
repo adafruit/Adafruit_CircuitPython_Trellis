@@ -13,7 +13,7 @@ from adafruit_trellis import Trellis
 # Create the I2C interface
 i2c = busio.I2C(SCL, SDA)
 
-# Create a Trellis object for each board
+# Create a Trellis object
 trellis = Trellis(i2c) # 0x70 when no I2C address is supplied
 
 # 'auto_show' defaults to 'True', so anytime LED states change,
@@ -23,12 +23,12 @@ trellis = Trellis(i2c) # 0x70 when no I2C address is supplied
 
 # Turn on every LED
 print('Turning all LEDs on...')
-trellis.fill(1)
+trellis.led.fill(True)
 time.sleep(2)
 
 # Turn off every LED
 print('Turning all LEDs off...')
-trellis.fill(0)
+trellis.led.fill(False)
 time.sleep(2)
 
 # Turn on every LED, one at a time
@@ -44,12 +44,12 @@ for i in range(15,0,-1):
     time.sleep(.1)
 
 # Now start reading button activity
-# When a button is depressed (just_pressed),
-# the LED for that button will turn on.
-# When the button is relased (released),
-# the LED will turn off.
-# Any button that is still depressed (pressed_buttons),
-# the LED will remain on.
+# - When a button is depressed (just_pressed),
+#   the LED for that button will turn on.
+# - When the button is relased (released),
+#   the LED will turn off.
+# - Any button that is still depressed (pressed_buttons),
+#   the LED will remain on.
 print('Starting button sensory loop...')
 pressed_buttons = set()
 while True:
@@ -57,21 +57,15 @@ while True:
     # cycle.
     time.sleep(.1)
 
-    try:
-        just_pressed, released = trellis.read_buttons()
-        for b in just_pressed:
-            print('pressed:', b)
-            trellis.led[b] = True
-        pressed_buttons.update(just_pressed)
-        for b in released:
-            print('released:', b)
-            trellis.led[b] = False
-        pressed_buttons.difference_update(released)
-        for b in pressed_buttons:
-            print('still pressed:', b)
-            trellis.led[b] = True
-
-    # This allows the program to stop running when Ctrl+C is
-    # pressed in the REPL.
-    except KeyboardInterrupt:
-        break
+    just_pressed, released = trellis.read_buttons()
+    for b in just_pressed:
+        print('pressed:', b)
+        trellis.led[b] = True
+    pressed_buttons.update(just_pressed)
+    for b in released:
+        print('released:', b)
+        trellis.led[b] = False
+    pressed_buttons.difference_update(released)
+    for b in pressed_buttons:
+        print('still pressed:', b)
+        trellis.led[b] = True
