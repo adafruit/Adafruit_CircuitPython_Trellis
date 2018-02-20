@@ -50,12 +50,12 @@ usage example.
 
     # Turn on every LED
     print('Turning all LEDs on...')
-    trellis.fill(1)
+    trellis.led.fill(True)
     time.sleep(2)
 
     # Turn off every LED
     print('Turning all LEDs off...')
-    trellis.fill(0)
+    trellis.led.fill(False)
     time.sleep(2)
 
 Contributing
