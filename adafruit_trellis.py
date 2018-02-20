@@ -101,7 +101,7 @@ class TrellisLEDs():
 
         if self._parent._auto_show:
             self._parent.show()
-
+    # pylint: disable=invalid-name
     def fill(self, on):
         fill = 0xff if on else 0x00
         for buff in range(len(self._parent._i2c_devices)):
