@@ -73,6 +73,43 @@ buttonLUT = (0x07, 0x04, 0x02, 0x22,
              0x13, 0x12, 0x11, 0x31)
 # pylint: enable=bad-whitespace, invalid-name
 
+class TrellisLEDs():
+    def __init__(self, trellis_obj):
+        self._parent = trellis_obj
+
+    def __getitem__(self, x):
+        if 0 < x >= self._parent._num_leds:
+            raise ValueError(('LED number must be between 0 -', self._parent._num_leds - 1))
+        led = ledLUT[x % 16] >> 4
+        mask = 1 << (ledLUT[x % 16] & 0x0f)
+        return bool(((self._parent._led_buffer[x // 16][led * 2] | \
+                     self._parent._led_buffer[x // 16][(led * 2) + 1] << 8) & mask) > 0)
+    
+    def __setitem__(self, x, value):
+        if 0 < x >= self._parent._num_leds:
+            raise ValueError(('LED number must be between 0 -', self._parent._num_leds - 1))
+        led = ledLUT[x % 16] >> 4
+        mask = 1 << (ledLUT[x % 16] & 0x0f)
+        if value == True:
+            self._parent._led_buffer[x // 16][led * 2] |= mask
+            self._parent._led_buffer[x // 16][(led * 2) + 1] |= mask >> 8
+        elif value == False:
+            self._parent._led_buffer[x // 16][led * 2] &= ~mask
+            self._parent._led_buffer[x // 16][(led * 2) + 1] &= ~mask >> 8
+        else:
+            raise ValueError("LED value must be True or False")
+
+        if self._parent._auto_show:
+            self._parent.show()
+
+    def fill(self, on):
+        fill = 0xff if on else 0x00
+        for d in range(len(self._parent._i2c_devices)):
+            for i in range(16):
+                self._parent._led_buffer[d][i] = fill
+        if self._parent._auto_show:
+            self._parent.show()
+
 class Trellis():
     """
     Driver base for a single Trellis Board
@@ -84,36 +121,11 @@ class Trellis():
                            Trellis product guide for using different/multiple I2C addresses.
                            https://learn.adafruit.com/adafruit-trellis-diy-open-source-led-keypad
 
-    Example:
 
-    .. code-block:: python
+    .. literalinclude:: ../examples/trellis_simpletest.py
+        :caption: Usage Example
+        :linenos:
 
-        import time
-        import busio
-        from board import SCL, SDA
-        from adafruit_trellis import Trellis
-
-        i2c = busio.I2C(SCL, SDA)
-        trellis = Trellis(i2c) # single Trellis (0x70 default address)
-        #trellis = Trellis(i2c, [0x70, 0x71]) # multiple Trellis w/address list
-        print('Starting button sensory loop...')
-        while True:
-            try:
-                just_pressed, released = trellis.read_buttons()
-                for b in just_pressed:
-                    print('pressed:', b)
-                    trellis.led[b] = True
-                pressed_buttons.update(just_pressed)
-                for b in released:
-                    print('released:', b)
-                    trellis.led[b] = False
-                pressed_buttons.difference_update(released)
-                for b in pressed_buttons:
-                    print('still pressed:', b)
-                    trellis.led[b] = True
-            except KeyboardInterrupt:
-                break
-            time.sleep(.1)
     """
     def __init__(self, i2c, addresses=None):
         if addresses is None:
@@ -130,15 +142,16 @@ class Trellis():
         self._blink_rate = None
         self._brightness = None
         self._auto_show = True
-        self.led = self._led_obj(self._num_leds, self._led_buffer, self.show, self._auto_show)
+        self.led = TrellisLEDs(self)
         """
         The LED object used to interact with Trellis LEDs.
 
         - ``trellis.led[x]`` returns the current LED status of LED ``x`` (True/False)
         - ``trellis.led[x] = True`` turns the LED at ``x`` on
         - ``trellis.led[x] = False`` turns the LED at ``x`` off
+        - ``trellis.led.fill(bool)`` turns every LED on (True) or off (False)
         """
-        self.fill(0)
+        self.led.fill(False)
         self._write_cmd(_HT16K33_OSCILATOR_ON)
         self.blink_rate = 0
         self.brightness = 15
@@ -204,20 +217,6 @@ class Trellis():
             raise ValueError("Auto show value must be True or False")
         self._auto_show = value
 
-    def fill(self, color):
-        """
-        Fill the whole board with the given color.
-
-        :param int color: 0 == OFF, > 0 == ON
-
-        """
-        fill = 0xff if color else 0x00
-        for buff in range(len(self._i2c_devices)):
-            for i in range(16):
-                self._led_buffer[buff][i] = fill
-        if self._auto_show:
-            self.show()
-
     def read_buttons(self):
         """
         Read the button matrix register on the Trellis board(s). Returns two
@@ -242,60 +241,17 @@ class Trellis():
         return pressed, released
 
     def _is_pressed(self, button):
-        if button > self._num_leds:
-            return None
         mask = 1 << (buttonLUT[button % 16] & 0x0f)
         return self._buttons[button // 16][1][(buttonLUT[button % 16] >> 4)] & mask
 
     def _was_pressed(self, button):
-        if button > self._num_leds:
-            return None
         mask = 1 << (buttonLUT[button % 16] & 0x0f)
         return self._buttons[button // 16][0][(buttonLUT[button % 16] >> 4)] & mask
 
     def _just_pressed(self, button):
-        if button > self._num_leds:
-            raise ValueError('Button must be between 0 &', self._num_leds)
         # pylint: disable=invalid-unary-operand-type
         return self._is_pressed(button) & ~self._was_pressed(button)
-        # pylint: enable=invalid-unary-operand-type
 
     def _just_released(self, button):
-        if button > self._num_leds:
-            raise ValueError('Button must be between 0 &', self._num_leds)
         # pylint: disable=invalid-unary-operand-type
         return ~self._is_pressed(button) & self._was_pressed(button)
-        # pylint: enable=invalid-unary-operand-type
-
-    # pylint: disable=protected-access, too-few-public-methods
-    class _led_obj():
-        def __init__(self, num_leds, led_buffer, show, auto_show):
-            self._parent_num_leds = num_leds
-            self._parent_led_buffer = led_buffer
-            self._parent_auto_show = auto_show
-            self._parent_show = show
-
-        def __getitem__(self, x):
-            if 0 < x > self._parent_num_leds:
-                raise ValueError("LED number must be between 0 -", self._parent_num_leds)
-            led = ledLUT[x % 16] >> 4
-            mask = 1 << (ledLUT[x % 16] & 0x0f)
-            return bool(((self._parent_led_buffer[x // 16][led * 2] | \
-                         self._parent_led_buffer[x // 16][(led * 2) + 1] << 8) & mask) > 0)
-
-        def __setitem__(self, x, value):
-            if 0 < x > self._parent_num_leds:
-                raise ValueError("LED number must be between 0 -", self._parent_num_leds)
-            led = ledLUT[x % 16] >> 4
-            mask = 1 << (ledLUT[x % 16] & 0x0f)
-            if value:
-                self._parent_led_buffer[x // 16][led * 2] |= mask
-                self._parent_led_buffer[x // 16][(led * 2) + 1] |= mask >> 8
-            elif not value:
-                self._parent_led_buffer[x // 16][led * 2] &= ~mask
-                self._parent_led_buffer[x // 16][(led * 2) + 1] &= ~mask >> 8
-            else:
-                raise ValueError("LED value must be True or False")
-
-            if self._parent_auto_show:
-                self._parent_show()
