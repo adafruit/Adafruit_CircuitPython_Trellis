@@ -72,7 +72,7 @@ buttonLUT = (0x07, 0x04, 0x02, 0x22,
              0x03, 0x10, 0x30, 0x21,
              0x13, 0x12, 0x11, 0x31)
 # pylint: enable=bad-whitespace, invalid-name
-
+# pylint: disable=missing-docstring, protected-access
 class TrellisLEDs():
     def __init__(self, trellis_obj):
         self._parent = trellis_obj
@@ -84,16 +84,16 @@ class TrellisLEDs():
         mask = 1 << (ledLUT[x % 16] & 0x0f)
         return bool(((self._parent._led_buffer[x // 16][led * 2] | \
                      self._parent._led_buffer[x // 16][(led * 2) + 1] << 8) & mask) > 0)
-    
+
     def __setitem__(self, x, value):
         if 0 < x >= self._parent._num_leds:
             raise ValueError(('LED number must be between 0 -', self._parent._num_leds - 1))
         led = ledLUT[x % 16] >> 4
         mask = 1 << (ledLUT[x % 16] & 0x0f)
-        if value == True:
+        if value:
             self._parent._led_buffer[x // 16][led * 2] |= mask
             self._parent._led_buffer[x // 16][(led * 2) + 1] |= mask >> 8
-        elif value == False:
+        elif not value:
             self._parent._led_buffer[x // 16][led * 2] &= ~mask
             self._parent._led_buffer[x // 16][(led * 2) + 1] &= ~mask >> 8
         else:
@@ -104,11 +104,12 @@ class TrellisLEDs():
 
     def fill(self, on):
         fill = 0xff if on else 0x00
-        for d in range(len(self._parent._i2c_devices)):
+        for buff in range(len(self._parent._i2c_devices)):
             for i in range(16):
-                self._parent._led_buffer[d][i] = fill
+                self._parent._led_buffer[buff][i] = fill
         if self._parent._auto_show:
             self._parent.show()
+# pylint: enable=missing-docstring, protected-access
 
 class Trellis():
     """
