@@ -20,7 +20,7 @@ extensions = [
 # autodoc module docs will fail to generate with a warning.
 autodoc_mock_imports = ["micropython", "adafruit_bus_device"]
 
-intersphinx_mapping = {'python': ('https://docs.python.org/3.4', None),'BusDevice': ('https://circuitpython.readthedocs.io/projects/bus_device/en/latest/', None),'Register': ('https://circuitpython.readthedocs.io/projects/register/en/latest/', None),'CircuitPython': ('https://circuitpython.readthedocs.io/en/latest/', None)}
+intersphinx_mapping = {'python': ('https://docs.python.org/3.4', None),'BusDevice': ('https://circuitpython.readthedocs.io/projects/busdevice/en/latest/', None),'Register': ('https://circuitpython.readthedocs.io/projects/register/en/latest/', None),'CircuitPython': ('https://circuitpython.readthedocs.io/en/latest/', None)}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -97,6 +97,12 @@ else:
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# The name of an image file (relative to this directory) to use as a favicon of
+# the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
+# pixels large.
+#
+html_favicon = '_static/favicon.ico'
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'AdafruitTrellisLibrarydoc'
