@@ -39,7 +39,7 @@ for i in range(16):
 
 # Turn off every LED, one at a time
 print('Turning off each LED, one at a time...')
-for i in range(15,-1,-1):
+for i in range(15,0,-1):
     trellis.led[i] = False
     time.sleep(.1)
 
