@@ -82,8 +82,8 @@ class TrellisLEDs():
             raise ValueError(('LED number must be between 0 -', self._parent._num_leds - 1))
         led = ledLUT[x % 16] >> 4
         mask = 1 << (ledLUT[x % 16] & 0x0f)
-        return bool(((self._parent._led_buffer[x // 16][led * 2] | \
-                     self._parent._led_buffer[x // 16][(led * 2) + 1] << 8) & mask) > 0)
+        return bool(((self._parent._led_buffer[x // 16][(led * 2) + 1] | \
+                     self._parent._led_buffer[x // 16][(led * 2) + 2] << 8) & mask) > 0)
 
     def __setitem__(self, x, value):
         if 0 < x >= self._parent._num_leds:
@@ -91,11 +91,11 @@ class TrellisLEDs():
         led = ledLUT[x % 16] >> 4
         mask = 1 << (ledLUT[x % 16] & 0x0f)
         if value:
-            self._parent._led_buffer[x // 16][led * 2] |= mask
-            self._parent._led_buffer[x // 16][(led * 2) + 1] |= mask >> 8
+            self._parent._led_buffer[x // 16][(led * 2) + 1] |= mask
+            self._parent._led_buffer[x // 16][(led * 2) + 2] |= mask >> 8
         elif not value:
-            self._parent._led_buffer[x // 16][led * 2] &= ~mask
-            self._parent._led_buffer[x // 16][(led * 2) + 1] &= ~mask >> 8
+            self._parent._led_buffer[x // 16][(led * 2) + 1] &= ~mask
+            self._parent._led_buffer[x // 16][(led * 2) + 2] &= ~mask >> 8
         else:
             raise ValueError("LED value must be True or False")
 
@@ -105,7 +105,7 @@ class TrellisLEDs():
     def fill(self, on):
         fill = 0xff if on else 0x00
         for buff in range(len(self._parent._i2c_devices)):
-            for i in range(16):
+            for i in range(1, 16):
                 self._parent._led_buffer[buff][i] = fill
         if self._parent._auto_show:
             self._parent.show()
@@ -196,10 +196,9 @@ class Trellis():
 
     def show(self):
         """Refresh the LED buffer and show the changes."""
-        temp_led_buffer = bytearray(self._num_leds + 1)
         pos = 0
         for device in self._i2c_devices:
-            temp_led_buffer[1:] = self._led_buffer[pos]
+            temp_led_buffer = bytearray(self._led_buffer[pos])
             with device:
                 device.write(temp_led_buffer)
             pos += 1
@@ -224,7 +223,7 @@ class Trellis():
         lists: 1 for new button presses, 1 for button relases.
         """
         for i in range(len(self._buttons)):
-            self._buttons[i][0][:] = self._buttons[i][1][:]
+            self._buttons[i][0] = bytearray(self._buttons[i][1])
         self._write_cmd(_HT16K33_KEY_READ_CMD)
         pos = 0
         for device in self._i2c_devices:
