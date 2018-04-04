@@ -136,7 +136,7 @@ class Trellis():
         self._buttons = []
         for i2c_address in addresses:
             self._i2c_devices.append(i2c_device.I2CDevice(i2c, i2c_address))
-            self._led_buffer.append(bytearray(16))
+            self._led_buffer.append(bytearray(17))
             self._buttons.append([bytearray(6), bytearray(6)])
         self._num_leds = len(self._i2c_devices) * 16
         self._temp = bytearray(1)
