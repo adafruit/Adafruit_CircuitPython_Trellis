@@ -105,7 +105,7 @@ class TrellisLEDs():
     def fill(self, on):
         fill = 0xff if on else 0x00
         for buff in range(len(self._parent._i2c_devices)):
-            for i in range(1, 16):
+            for i in range(1, 17):
                 self._parent._led_buffer[buff][i] = fill
         if self._parent._auto_show:
             self._parent.show()
