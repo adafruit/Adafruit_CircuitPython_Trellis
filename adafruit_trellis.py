@@ -172,7 +172,7 @@ class Trellis():
 
     @blink_rate.setter
     def blink_rate(self, rate):
-        if 0 < rate > 3:
+        if not 0 <= rate <= 3:
             raise ValueError('Blink rate must be an integer in the range: 0-3')
         rate = rate & 0x03
         self._blink_rate = rate
@@ -188,7 +188,7 @@ class Trellis():
 
     @brightness.setter
     def brightness(self, brightness):
-        if 0 < brightness > 15:
+        if not 0 <= brightness <= 15:
             raise ValueError('Brightness must be an integer in the range: 0-15')
         brightness = brightness & 0x0F
         self._brightness = brightness
