@@ -14,7 +14,7 @@ from adafruit_trellis import Trellis
 i2c = busio.I2C(SCL, SDA)
 
 # Create a Trellis object
-trellis = Trellis(i2c) # 0x70 when no I2C address is supplied
+trellis = Trellis(i2c)  # 0x70 when no I2C address is supplied
 
 # 'auto_show' defaults to 'True', so anytime LED states change,
 # the changes are automatically sent to the Trellis board. If you
@@ -39,7 +39,7 @@ for i in range(16):
 
 # Turn off every LED, one at a time
 print('Turning off each LED, one at a time...')
-for i in range(15,0,-1):
+for i in range(15, 0, -1):
     trellis.led[i] = False
     time.sleep(.1)
 
