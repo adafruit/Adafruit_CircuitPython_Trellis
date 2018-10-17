@@ -91,8 +91,7 @@ class TrellisLEDs():
         led = ledLUT[x % 16] >> 4
         mask = 1 << (ledLUT[x % 16] & 0x0f)
         if value:
-            if mask < 256:
-                self._parent._led_buffer[x // 16][(led * 2) + 1] |= mask
+            self._parent._led_buffer[x // 16][(led * 2) + 1] |= (mask & 0xff)
             self._parent._led_buffer[x // 16][(led * 2) + 2] |= mask >> 8
         elif not value:
             self._parent._led_buffer[x // 16][(led * 2) + 1] &= ~mask
