@@ -9,8 +9,8 @@ Introduction
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
-.. image:: https://travis-ci.org/adafruit/Adafruit_CircuitPython_Trellis.svg?branch=master
-    :target: https://travis-ci.org/adafruit/Adafruit_CircuitPython_Trellis
+.. image:: https://travis-ci.com/adafruit/Adafruit_CircuitPython_Trellis.svg?branch=master
+    :target: https://travis-ci.com/adafruit/Adafruit_CircuitPython_Trellis
     :alt: Build Status
 
 This library will allow you to control the LEDs and read button presses on the `Adafruit Trellis
