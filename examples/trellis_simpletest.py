@@ -22,26 +22,26 @@ trellis = Trellis(i2c)  # 0x70 when no I2C address is supplied
 # method afterwards to send updates to the Trellis board.
 
 # Turn on every LED
-print('Turning all LEDs on...')
+print("Turning all LEDs on...")
 trellis.led.fill(True)
 time.sleep(2)
 
 # Turn off every LED
-print('Turning all LEDs off...')
+print("Turning all LEDs off...")
 trellis.led.fill(False)
 time.sleep(2)
 
 # Turn on every LED, one at a time
-print('Turning on each LED, one at a time...')
+print("Turning on each LED, one at a time...")
 for i in range(16):
     trellis.led[i] = True
-    time.sleep(.1)
+    time.sleep(0.1)
 
 # Turn off every LED, one at a time
-print('Turning off each LED, one at a time...')
+print("Turning off each LED, one at a time...")
 for i in range(15, 0, -1):
     trellis.led[i] = False
-    time.sleep(.1)
+    time.sleep(0.1)
 
 # Now start reading button activity
 # - When a button is depressed (just_pressed),
@@ -50,22 +50,22 @@ for i in range(15, 0, -1):
 #   the LED will turn off.
 # - Any button that is still depressed (pressed_buttons),
 #   the LED will remain on.
-print('Starting button sensory loop...')
+print("Starting button sensory loop...")
 pressed_buttons = set()
 while True:
     # Make sure to take a break during each trellis.read_buttons
     # cycle.
-    time.sleep(.1)
+    time.sleep(0.1)
 
     just_pressed, released = trellis.read_buttons()
     for b in just_pressed:
-        print('pressed:', b)
+        print("pressed:", b)
         trellis.led[b] = True
     pressed_buttons.update(just_pressed)
     for b in released:
-        print('released:', b)
+        print("released:", b)
         trellis.led[b] = False
     pressed_buttons.difference_update(released)
     for b in pressed_buttons:
-        print('still pressed:', b)
+        print("still pressed:", b)
         trellis.led[b] = True
