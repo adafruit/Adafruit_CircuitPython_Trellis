@@ -54,44 +54,84 @@ from adafruit_bus_device import i2c_device
 
 # HT16K33 Command Contstants
 # pylint: disable=bad-whitespace, invalid-name
-_HT16K33_OSCILATOR_ON       = const(0x21)
-_HT16K33_BLINK_CMD          = const(0x80)
-_HT16K33_BLINK_DISPLAYON    = const(0x01)
-_HT16K33_CMD_BRIGHTNESS     = const(0xE0)
-_HT16K33_KEY_READ_CMD       = const(0x40)
+_HT16K33_OSCILATOR_ON = const(0x21)
+_HT16K33_BLINK_CMD = const(0x80)
+_HT16K33_BLINK_DISPLAYON = const(0x01)
+_HT16K33_CMD_BRIGHTNESS = const(0xE0)
+_HT16K33_KEY_READ_CMD = const(0x40)
 
 # LED Lookup Table
-ledLUT = (0x3A, 0x37, 0x35, 0x34,
-          0x28, 0x29, 0x23, 0x24,
-          0x16, 0x1B, 0x11, 0x10,
-          0x0E, 0x0D, 0x0C, 0x02)
+ledLUT = (
+    0x3A,
+    0x37,
+    0x35,
+    0x34,
+    0x28,
+    0x29,
+    0x23,
+    0x24,
+    0x16,
+    0x1B,
+    0x11,
+    0x10,
+    0x0E,
+    0x0D,
+    0x0C,
+    0x02,
+)
 
 # Button Loookup Table
-buttonLUT = (0x07, 0x04, 0x02, 0x22,
-             0x05, 0x06, 0x00, 0x01,
-             0x03, 0x10, 0x30, 0x21,
-             0x13, 0x12, 0x11, 0x31)
+buttonLUT = (
+    0x07,
+    0x04,
+    0x02,
+    0x22,
+    0x05,
+    0x06,
+    0x00,
+    0x01,
+    0x03,
+    0x10,
+    0x30,
+    0x21,
+    0x13,
+    0x12,
+    0x11,
+    0x31,
+)
 # pylint: enable=bad-whitespace, invalid-name
 # pylint: disable=missing-docstring, protected-access
-class TrellisLEDs():
+class TrellisLEDs:
     def __init__(self, trellis_obj):
         self._parent = trellis_obj
 
     def __getitem__(self, x):
         if 0 < x >= self._parent._num_leds:
-            raise ValueError(('LED number must be between 0 -', self._parent._num_leds - 1))
+            raise ValueError(
+                ("LED number must be between 0 -", self._parent._num_leds - 1)
+            )
         led = ledLUT[x % 16] >> 4
-        mask = 1 << (ledLUT[x % 16] & 0x0f)
-        return bool(((self._parent._led_buffer[x // 16][(led * 2) + 1] | \
-                     self._parent._led_buffer[x // 16][(led * 2) + 2] << 8) & mask) > 0)
+        mask = 1 << (ledLUT[x % 16] & 0x0F)
+        return bool(
+            (
+                (
+                    self._parent._led_buffer[x // 16][(led * 2) + 1]
+                    | self._parent._led_buffer[x // 16][(led * 2) + 2] << 8
+                )
+                & mask
+            )
+            > 0
+        )
 
     def __setitem__(self, x, value):
         if 0 < x >= self._parent._num_leds:
-            raise ValueError(('LED number must be between 0 -', self._parent._num_leds - 1))
+            raise ValueError(
+                ("LED number must be between 0 -", self._parent._num_leds - 1)
+            )
         led = ledLUT[x % 16] >> 4
-        mask = 1 << (ledLUT[x % 16] & 0x0f)
+        mask = 1 << (ledLUT[x % 16] & 0x0F)
         if value:
-            self._parent._led_buffer[x // 16][(led * 2) + 1] |= (mask & 0xff)
+            self._parent._led_buffer[x // 16][(led * 2) + 1] |= mask & 0xFF
             self._parent._led_buffer[x // 16][(led * 2) + 2] |= mask >> 8
         elif not value:
             self._parent._led_buffer[x // 16][(led * 2) + 1] &= ~mask
@@ -101,17 +141,21 @@ class TrellisLEDs():
 
         if self._parent._auto_show:
             self._parent.show()
+
     # pylint: disable=invalid-name
     def fill(self, on):
-        fill = 0xff if on else 0x00
+        fill = 0xFF if on else 0x00
         for buff in range(len(self._parent._i2c_devices)):
             for i in range(1, 17):
                 self._parent._led_buffer[buff][i] = fill
         if self._parent._auto_show:
             self._parent.show()
+
+
 # pylint: enable=missing-docstring, protected-access
 
-class Trellis():
+
+class Trellis:
     """
     Driver base for a single Trellis Board
 
@@ -128,6 +172,7 @@ class Trellis():
         :linenos:
 
     """
+
     def __init__(self, i2c, addresses=None):
         if addresses is None:
             addresses = [0x70]
@@ -173,11 +218,10 @@ class Trellis():
     @blink_rate.setter
     def blink_rate(self, rate):
         if not 0 <= rate <= 3:
-            raise ValueError('Blink rate must be an integer in the range: 0-3')
+            raise ValueError("Blink rate must be an integer in the range: 0-3")
         rate = rate & 0x03
         self._blink_rate = rate
-        self._write_cmd(_HT16K33_BLINK_CMD |
-                        _HT16K33_BLINK_DISPLAYON | rate << 1)
+        self._write_cmd(_HT16K33_BLINK_CMD | _HT16K33_BLINK_DISPLAYON | rate << 1)
 
     @property
     def brightness(self):
@@ -189,7 +233,7 @@ class Trellis():
     @brightness.setter
     def brightness(self, brightness):
         if not 0 <= brightness <= 15:
-            raise ValueError('Brightness must be an integer in the range: 0-15')
+            raise ValueError("Brightness must be an integer in the range: 0-15")
         brightness = brightness & 0x0F
         self._brightness = brightness
         self._write_cmd(_HT16K33_CMD_BRIGHTNESS | brightness)
@@ -241,11 +285,11 @@ class Trellis():
         return pressed, released
 
     def _is_pressed(self, button):
-        mask = 1 << (buttonLUT[button % 16] & 0x0f)
+        mask = 1 << (buttonLUT[button % 16] & 0x0F)
         return self._buttons[button // 16][1][(buttonLUT[button % 16] >> 4)] & mask
 
     def _was_pressed(self, button):
-        mask = 1 << (buttonLUT[button % 16] & 0x0f)
+        mask = 1 << (buttonLUT[button % 16] & 0x0F)
         return self._buttons[button // 16][0][(buttonLUT[button % 16] >> 4)] & mask
 
     def _just_pressed(self, button):
