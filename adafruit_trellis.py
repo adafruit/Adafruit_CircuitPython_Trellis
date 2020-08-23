@@ -53,7 +53,6 @@ from micropython import const
 from adafruit_bus_device import i2c_device
 
 # HT16K33 Command Contstants
-# pylint: disable=bad-whitespace, invalid-name
 _HT16K33_OSCILATOR_ON = const(0x21)
 _HT16K33_BLINK_CMD = const(0x80)
 _HT16K33_BLINK_DISPLAYON = const(0x01)
@@ -99,7 +98,6 @@ buttonLUT = (
     0x11,
     0x31,
 )
-# pylint: enable=bad-whitespace, invalid-name
 # pylint: disable=missing-docstring, protected-access
 class TrellisLEDs:
     def __init__(self, trellis_obj):
