@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2018 ladyada for Adafruit Industries
+# SPDX-FileCopyrightText: 2018 Michael Schroeder (sommersoft)
+#
+# SPDX-License-Identifier: MIT
+
 #  This is a library for the Adafruit Trellis w/HT16K33
 #
 #  Designed specifically to work with the Adafruit Trellis
@@ -10,18 +15,10 @@
 #  please support Adafruit and open-source hardware by purchasing
 #  products from Adafruit!
 #
-#  Written by Limor Fried/Ladyada for Adafruit Industries.
-#  MIT license, all text above must be included in any redistribution
-#
 #  Also utilized functions from the CircuitPython HT16K33 library
 #  written by Radomir Dopieralski & Tony DiCola for Adafruit Industries
 #  https://github.com/adafruit/Adafruit_CircuitPython_HT16K33
-#
-#  Also written with suggestions from Scott Shawcroft for
-#  Adafruit Industries
-#
-#  CircuitPython Library Author: Michael Schroeder(sommersoft). No
-#  affiliation to Adafruit is implied.
+
 """
 `adafruit_trellis` - Adafruit Trellis Monochrome 4x4 LED Backlit Keypad
 =========================================================================
