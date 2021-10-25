@@ -83,6 +83,11 @@ usage example.
     trellis.led.fill(False)
     time.sleep(2)
 
+Documentation
+=============
+
+API documentation for this library can be found on `Read the Docs <https://circuitpython.readthedocs.io/projects/trellis/en/latest/>`_.
+
 Contributing
 ============
 
