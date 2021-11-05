@@ -261,7 +261,7 @@ class Trellis:
         Read the button matrix register on the Trellis board(s). Returns two
         lists: 1 for new button presses, 1 for button relases.
         """
-        for i in range(len(self._buttons)):
+        for i in range(len(self._buttons)):  # pylint: disable=consider-using-enumerate
             self._buttons[i][0] = bytearray(self._buttons[i][1])
         self._write_cmd(_HT16K33_KEY_READ_CMD)
         pos = 0
