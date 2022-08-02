@@ -13,6 +13,10 @@ Introduction
     :target: https://github.com/adafruit/Adafruit_CircuitPython_Trellis/actions/
     :alt: Build Status
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
+    :alt: Code Style: Black
+
 This library will allow you to control the LEDs and read button presses on the `Adafruit Trellis
 Board <https://www.adafruit.com/product/1616>`_. It will work with a single Trellis board, or
 with a matrix of up to 8 Trellis boards.
