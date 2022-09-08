@@ -107,7 +107,7 @@ class TrellisLEDs:
     def __init__(self, trellis_obj: "Trellis") -> None:
         self._parent = trellis_obj
 
-    def __getitem__(self, x: int) -> None:
+    def __getitem__(self, x: int) -> bool:
         if 0 < x >= self._parent._num_leds:
             raise ValueError(
                 ("LED number must be between 0 -", self._parent._num_leds - 1)
@@ -175,7 +175,7 @@ class Trellis:
 
     """
 
-    def __init__(self, i2c: I2C, addresses: Optional[int] = None) -> None:
+    def __init__(self, i2c: I2C, addresses: Optional[List[int]] = None) -> None:
         if addresses is None:
             addresses = [0x70]
         self._i2c_devices = []
@@ -211,7 +211,7 @@ class Trellis:
                 device.write(self._temp)
 
     @property
-    def blink_rate(self) -> int:
+    def blink_rate(self) -> Literal[0, 1, 2, 3]:
         """
         The current blink rate as an integer range 0-3.
         """
@@ -233,9 +233,7 @@ class Trellis:
         return self._brightness
 
     @brightness.setter
-    def brightness(
-        self, brightness: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-    ) -> None:
+    def brightness(self, brightness: int) -> None:
         if not 0 <= brightness <= 15:
             raise ValueError("Brightness must be an integer in the range: 0-15")
         brightness = brightness & 0x0F
