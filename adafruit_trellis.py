@@ -49,6 +49,13 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Trellis.git"
 from micropython import const
 from adafruit_bus_device import i2c_device
 
+try:
+    from typing import List, Optional, Tuple
+    from typing_extensions import Literal
+    from busio import I2C
+except ImportError:
+    pass
+
 # HT16K33 Command Contstants
 _HT16K33_OSCILATOR_ON = const(0x21)
 _HT16K33_BLINK_CMD = const(0x80)
@@ -97,10 +104,10 @@ buttonLUT = (
 )
 # pylint: disable=missing-docstring, protected-access
 class TrellisLEDs:
-    def __init__(self, trellis_obj):
+    def __init__(self, trellis_obj: "Trellis") -> None:
         self._parent = trellis_obj
 
-    def __getitem__(self, x):
+    def __getitem__(self, x: int) -> bool:
         if 0 < x >= self._parent._num_leds:
             raise ValueError(
                 ("LED number must be between 0 -", self._parent._num_leds - 1)
@@ -118,7 +125,7 @@ class TrellisLEDs:
             > 0
         )
 
-    def __setitem__(self, x, value):
+    def __setitem__(self, x: int, value: bool) -> None:
         if 0 < x >= self._parent._num_leds:
             raise ValueError(
                 ("LED number must be between 0 -", self._parent._num_leds - 1)
@@ -138,7 +145,7 @@ class TrellisLEDs:
             self._parent.show()
 
     # pylint: disable=invalid-name
-    def fill(self, on):
+    def fill(self, on: bool) -> None:
         fill = 0xFF if on else 0x00
         for buff in range(len(self._parent._i2c_devices)):
             for i in range(1, 17):
@@ -168,7 +175,7 @@ class Trellis:
 
     """
 
-    def __init__(self, i2c, addresses=None):
+    def __init__(self, i2c: I2C, addresses: Optional[List[int]] = None) -> None:
         if addresses is None:
             addresses = [0x70]
         self._i2c_devices = []
@@ -197,21 +204,21 @@ class Trellis:
         self.blink_rate = 0
         self.brightness = 15
 
-    def _write_cmd(self, byte):
+    def _write_cmd(self, byte: int) -> None:
         self._temp[0] = byte
         for device in self._i2c_devices:
             with device:
                 device.write(self._temp)
 
     @property
-    def blink_rate(self):
+    def blink_rate(self) -> Literal[0, 1, 2, 3]:
         """
         The current blink rate as an integer range 0-3.
         """
         return self._blink_rate
 
     @blink_rate.setter
-    def blink_rate(self, rate):
+    def blink_rate(self, rate: Literal[0, 1, 2, 3]) -> None:
         if not 0 <= rate <= 3:
             raise ValueError("Blink rate must be an integer in the range: 0-3")
         rate = rate & 0x03
@@ -219,21 +226,21 @@ class Trellis:
         self._write_cmd(_HT16K33_BLINK_CMD | _HT16K33_BLINK_DISPLAYON | rate << 1)
 
     @property
-    def brightness(self):
+    def brightness(self) -> int:
         """
         The current brightness as an integer range 0-15.
         """
         return self._brightness
 
     @brightness.setter
-    def brightness(self, brightness):
+    def brightness(self, brightness: int) -> None:
         if not 0 <= brightness <= 15:
             raise ValueError("Brightness must be an integer in the range: 0-15")
         brightness = brightness & 0x0F
         self._brightness = brightness
         self._write_cmd(_HT16K33_CMD_BRIGHTNESS | brightness)
 
-    def show(self):
+    def show(self) -> None:
         """Refresh the LED buffer and show the changes."""
         pos = 0
         for device in self._i2c_devices:
@@ -243,7 +250,7 @@ class Trellis:
             pos += 1
 
     @property
-    def auto_show(self):
+    def auto_show(self) -> bool:
         """
         Current state of sending LED updates directly the Trellis board(s). ``True``
         or ``False``.
@@ -251,12 +258,12 @@ class Trellis:
         return self._auto_show
 
     @auto_show.setter
-    def auto_show(self, value):
+    def auto_show(self, value: bool) -> None:
         if value not in (True, False):
             raise ValueError("Auto show value must be True or False")
         self._auto_show = value
 
-    def read_buttons(self):
+    def read_buttons(self) -> Tuple[List[int], List[int]]:
         """
         Read the button matrix register on the Trellis board(s). Returns two
         lists: 1 for new button presses, 1 for button relases.
@@ -279,18 +286,18 @@ class Trellis:
 
         return pressed, released
 
-    def _is_pressed(self, button):
+    def _is_pressed(self, button: int) -> bool:
         mask = 1 << (buttonLUT[button % 16] & 0x0F)
         return self._buttons[button // 16][1][(buttonLUT[button % 16] >> 4)] & mask
 
-    def _was_pressed(self, button):
+    def _was_pressed(self, button: int) -> bool:
         mask = 1 << (buttonLUT[button % 16] & 0x0F)
         return self._buttons[button // 16][0][(buttonLUT[button % 16] >> 4)] & mask
 
-    def _just_pressed(self, button):
+    def _just_pressed(self, button: int) -> bool:
         # pylint: disable=invalid-unary-operand-type
         return self._is_pressed(button) & ~self._was_pressed(button)
 
-    def _just_released(self, button):
+    def _just_released(self, button: int) -> bool:
         # pylint: disable=invalid-unary-operand-type
         return ~self._is_pressed(button) & self._was_pressed(button)
