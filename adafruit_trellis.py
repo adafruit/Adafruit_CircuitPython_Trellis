@@ -102,6 +102,8 @@ buttonLUT = (
     0x11,
     0x31,
 )
+
+
 # pylint: disable=missing-docstring, protected-access
 class TrellisLEDs:
     def __init__(self, trellis_obj: "Trellis") -> None:
