@@ -46,13 +46,14 @@ Implementation Notes
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Trellis.git"
 
-from micropython import const
 from adafruit_bus_device import i2c_device
+from micropython import const
 
 try:
     from typing import List, Optional, Tuple
-    from typing_extensions import Literal
+
     from busio import I2C
+    from typing_extensions import Literal
 except ImportError:
     pass
 
@@ -104,16 +105,13 @@ buttonLUT = (
 )
 
 
-# pylint: disable=missing-docstring, protected-access
 class TrellisLEDs:
     def __init__(self, trellis_obj: "Trellis") -> None:
         self._parent = trellis_obj
 
     def __getitem__(self, x: int) -> bool:
         if 0 < x >= self._parent._num_leds:
-            raise ValueError(
-                ("LED number must be between 0 -", self._parent._num_leds - 1)
-            )
+            raise ValueError(("LED number must be between 0 -", self._parent._num_leds - 1))
         led = ledLUT[x % 16] >> 4
         mask = 1 << (ledLUT[x % 16] & 0x0F)
         return bool(
@@ -129,9 +127,7 @@ class TrellisLEDs:
 
     def __setitem__(self, x: int, value: bool) -> None:
         if 0 < x >= self._parent._num_leds:
-            raise ValueError(
-                ("LED number must be between 0 -", self._parent._num_leds - 1)
-            )
+            raise ValueError(("LED number must be between 0 -", self._parent._num_leds - 1))
         led = ledLUT[x % 16] >> 4
         mask = 1 << (ledLUT[x % 16] & 0x0F)
         if value:
@@ -146,7 +142,6 @@ class TrellisLEDs:
         if self._parent._auto_show:
             self._parent.show()
 
-    # pylint: disable=invalid-name
     def fill(self, on: bool) -> None:
         fill = 0xFF if on else 0x00
         for buff in range(len(self._parent._i2c_devices)):
@@ -154,9 +149,6 @@ class TrellisLEDs:
                 self._parent._led_buffer[buff][i] = fill
         if self._parent._auto_show:
             self._parent.show()
-
-
-# pylint: enable=missing-docstring, protected-access
 
 
 class Trellis:
@@ -261,7 +253,7 @@ class Trellis:
 
     @auto_show.setter
     def auto_show(self, value: bool) -> None:
-        if value not in (True, False):
+        if not isinstance(value, bool):
             raise ValueError("Auto show value must be True or False")
         self._auto_show = value
 
@@ -270,7 +262,7 @@ class Trellis:
         Read the button matrix register on the Trellis board(s). Returns two
         lists: 1 for new button presses, 1 for button relases.
         """
-        for i in range(len(self._buttons)):  # pylint: disable=consider-using-enumerate
+        for i in range(len(self._buttons)):
             self._buttons[i][0] = bytearray(self._buttons[i][1])
         self._write_cmd(_HT16K33_KEY_READ_CMD)
         pos = 0
@@ -297,9 +289,7 @@ class Trellis:
         return self._buttons[button // 16][0][(buttonLUT[button % 16] >> 4)] & mask
 
     def _just_pressed(self, button: int) -> bool:
-        # pylint: disable=invalid-unary-operand-type
         return self._is_pressed(button) & ~self._was_pressed(button)
 
     def _just_released(self, button: int) -> bool:
-        # pylint: disable=invalid-unary-operand-type
         return ~self._is_pressed(button) & self._was_pressed(button)
