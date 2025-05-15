@@ -9,8 +9,10 @@
 # see the documentation.
 
 import time
+
 import busio
 from board import SCL, SDA
+
 from adafruit_trellis import Trellis
 
 # Create the I2C interface
