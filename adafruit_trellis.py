@@ -215,7 +215,7 @@ class Trellis:
     def blink_rate(self, rate: Literal[0, 1, 2, 3]) -> None:
         if not 0 <= rate <= 3:
             raise ValueError("Blink rate must be an integer in the range: 0-3")
-        rate = rate & 0x03
+        rate &= 0x03
         self._blink_rate = rate
         self._write_cmd(_HT16K33_BLINK_CMD | _HT16K33_BLINK_DISPLAYON | rate << 1)
 
@@ -230,7 +230,7 @@ class Trellis:
     def brightness(self, brightness: int) -> None:
         if not 0 <= brightness <= 15:
             raise ValueError("Brightness must be an integer in the range: 0-15")
-        brightness = brightness & 0x0F
+        brightness &= 0x0F
         self._brightness = brightness
         self._write_cmd(_HT16K33_CMD_BRIGHTNESS | brightness)
 
